@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: restart-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: crash-test
+  template:
+    metadata:
+      labels:
+        app: crash-test
+    spec:
+      restartPolicy: Always # Container in the pod will get restarted
+      containers:
+      - name: busybox-container
+        image: busybox:latest
+        # This script prints a message, waits, then exits with an error
+        command: ["/bin/sh", "-c"]
+        args:
+        - echo "The application is starting up...";
+          sleep 1;
+          echo "Oh no! A critical error occurred!";
+          exit 1;
